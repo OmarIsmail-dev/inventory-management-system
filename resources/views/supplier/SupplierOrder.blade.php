@@ -1,0 +1,295 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>supplier</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="assets/bower_components/bootstrap/dist/css/bootstrap.min.css ">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.min.css ">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="assets/bower_components/Ionicons/css/ionicons.min.css ">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="assets/dist/css/AdminLTE.min.css ">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="assets/plugins/iCheck/square/blue.css ">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix ">
+                    <strong>
+                        <span class="glyphicon glyphicon-th"></span>
+                        <span>All Requests</span>
+                    </strong>
+                    <div class="pull-right">
+                        <a href="{{ route('AddRequests') }}" class="btn btn-primary">Add Requests</a>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 4px !important">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" style="">
+                            <thead>
+                                @php
+                                $hasSize = false;
+                                foreach ($SupplierOrders as $SupplierOrder) {
+                                    if ($SupplierOrder->user_id != auth()->user()->id) continue;
+                            
+                                    $categoryName = optional($SupplierOrder->order->product->category)->name;
+                                    if ($categoryName === 'shoes' || $categoryName === 'clothing') {
+                                        $hasSize = true;
+                                        break;
+                                    }
+                                }
+                            @endphp
+                                                                                                                
+                                <tr>
+                                    <th class="text-center" style="width: 10%;">#</th>
+                                    <th class="text-center" style="width: 15%;"> product_name</th>
+                                    <th class="text-center" style="width: 10%;"> Quantity</th>                                      @if ($hasSize ) 
+                                    <th class="text-center" style="width: 5%;">Size</th> 
+                                    @endif 
+                                    <th class="text-center" style="width: 5%;"> color</th>
+                                    <th class="text-center" style="width: 10%;"> price</th>
+                                    <th class="text-center" style="width: 10%;"> total Amount</th>
+                                    <th class="text-center" style="width: 15%;"> Delivery date</th>
+                                    <th class="text-center" style="width: 10%;"> Actions </th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                @foreach ($SupplierOrders as $SupplierOrder)
+                                    @if ($SupplierOrder->user_id == auth()->user()->id)
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ $SupplierOrder->id }}
+                                            </td> 
+                                            <td class="text-center"> 
+                                                @foreach ($products as $product)
+                                                    @if ($product->id === $SupplierOrder->order->product_id)
+                                                        {{ $product->title }}
+                                                    @endif
+                                                @endforeach 
+                                            </td>  
+                                            <td class="text-center">
+                                                {{ $SupplierOrder->quantity }} 
+                                            </td>  
+                                            @if ($SupplierOrder->order->product->category->name == 'shoes')  
+                                            <td class="text-center"> 
+                                                {{ $SupplierOrder->size_shoes }} 
+                                            </td>
+                                            @endif 
+                                            @if ($SupplierOrder->order->product->category->name=='clothing')
+                                            <td class="text-center"> 
+                                            {{ $SupplierOrder->size_clothes }}
+                                        </td>
+                                            @endif
+
+
+                                            <td class="text-center">
+                                                {{ $SupplierOrder->color }} 
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ $SupplierOrder->price }}EGP
+
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ $SupplierOrder->TotalAmount }}EGP
+
+                                            </td>
+
+
+
+                                            <td>
+                                                <label style="display: block">
+                                                    <svg style="color: blue" xmlns="http://www.w3.org/2000/svg"
+                                                        width="16" height="16" fill="currentColor"
+                                                        class="bi bi-calendar-check-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
+                                                    </svg>
+                                                    {{ $SupplierOrder->date }}
+
+                                                </label>
+                                                <label>
+                                                    <svg style="color: blue" xmlns="http://www.w3.org/2000/svg"
+                                                        width="16" height="16" fill="currentColor"
+                                                        class="bi bi-alarm-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5m2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.04 8.04 0 0 0 .86 5.387M11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.04 8.04 0 0 0-3.527-3.527" />
+                                                    </svg>
+
+                                                    {{ Carbon::parse($SupplierOrder->time)->format('h:i A') }}
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="{{ route('editRequests', $SupplierOrder->id) }}"
+                                                        class="btn btn-warning btn-xs" title="Edit"
+                                                        data-toggle="tooltip">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                    @foreach ($products as $product)
+                                                        @if ($product->id === $SupplierOrder->order->product_id)
+                                                            <a href="javascript:void(0);"
+                                                                onclick="confirmDelete('{{ route('deleteRequests', $SupplierOrder->id) }}', '{{ addslashes($product->title) }}')"
+                                                                class="btn btn-xs btn-danger">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                        </tr>
+                                    @endif
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <script>
+        function confirmDelete(deleteUrl, userName) {
+            Swal.fire({
+                title: "Are you sure?",
+                html: "<span style='font-size: 20px;'>Do you want to delete the order: <b>" + userName +
+                    "</b>?</span>",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete!",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                width: '600px',
+                padding: '2em',
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    window.location.href = deleteUrl;
+                } else {
+                    Swal.fire("Cancelled", "The order is safe!", "error");
+                }
+
+            });
+
+
+
+
+        }
+    </script>
+
+    <script>
+        < script >
+
+            @if (session('success'))
+                window.onload = function() {
+                    Swal.fire({
+                        title: 'Success!',
+                        html: "<span style='font-size: 20px;'>{{ session('success') }}</span>",
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        width: '600px',
+                        padding: '2em',
+
+                    });
+                }
+            @endif
+    </script>
+    </script>
+
+
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                title: 'success!',
+                html: "<span style='font-size: 20px;'>{{ session('success') }}</span>",
+                icon: 'success',
+                confirmButtonText: 'ok',
+                width: '600px',
+                padding: '2em',
+
+            });
+        @endif
+    </script>
+
+
+
+
+    </script>
+
+
+    <style>
+        button.swal2-confirm.btn.btn-success {
+            margin-left: 7px;
+        }
+
+        button.swal2-confirm.swal2-styled.swal2-default-outline {
+            padding: 9px 16px;
+            font-size: 13px;
+        }
+
+        button.swal2-cancel.swal2-styled.swal2-default-outline {
+
+            padding: 9px 16px;
+            font-size: 13px;
+        }
+
+        div#swal2-html-container {
+            font-size: 17px;
+        }
+    </style>
+
+
+    <script>
+        @if (session('error'))
+            window.onload = function() {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    html: "<span style='font-size: 20px;'>{{ session('error') }}</span>",
+                    width: '600px',
+                    padding: '2em',
+                    confirmButtonText: 'OK'
+                });
+            }
+        @endif
+    </script>
